@@ -93,16 +93,49 @@
 \begin{center}
     \textbf{Варіант 1}
 \end{center}
-\textbf{Завдання}
+\textbf{Завдання.} Скласти програму для мінімізації цільової функції
+одним з градієнтних методів. Конкретний тип градієнтного методу обрати
+самостійно, ураховуючи особливості цільової функції.
+
+\emph{Цільова функція:}
+$f(x,y) = x^2 + 18y^2 + 0.01xy + x - y$
 
 \noindent\textbf{Результати роботи.}
-
-\noindent\emph{Завдання 1.}
+Для визначення ярності цільової функції розглянемо її матрицю Гессе
+$f''(x,y) = \begin{pmatrix}
+    2 & 0.01 \\
+    0.01 & 36
+\end{pmatrix}$. Її власні числа приблизно рівні 2 та 36, тому матриця є погано обумовленою.
+Також це видно з графіку цільової функції та її ліній рівня.
+\begin{center}
+    \begin{tabular}{c c}
+        \includegraphics[scale = 0.6]{surface_init.png} &
+        \includegraphics[scale = 0.5]{contour_init.png}
+    \end{tabular}
+\end{center}
+Отже, функція має <<ярну>> структуру, тому для прискорення
+збіжності необхідно застосувати якусь модифікацію градієнтного методу.
+Для реалізації було обрано метод дроблення кроку, який має допомогти зменшити 
+зигзагоподібний характер шляху до точки мінімуму.
+Обраний критерій зупинки --- $\left| f(x_{k+1}) - f(x_k)\right| < \varepsilon = 10^{-5}$.
+Було отримано збіжність до точки мінімуму за 55 ітерацій.
+\begin{center}
+    \includegraphics[scale = 0.8]{contour_final.png}
+\end{center}
 
 \noindent\textbf{Лістинг.}
+Текст програми було розділено на \texttt{Optimizer.py} з реалізацією
+власне градієнтного методу та \texttt{lab1.py}, де він викликається та зберігаються результати.
 
-%\noindent\texttt{task.py}
-%\lstinputlisting[language = Python, style = python_code]{../task1.py}
+\noindent\texttt{Optimizer.py}
+\lstinputlisting[language = Python, style = python_code]{../code/Optimizer.py}
 
-\noindent\textbf{Висновки.}
+\noindent\texttt{lab1.py}
+\lstinputlisting[language = Python, style = python_code]{../code/lab1.py}
+
+\noindent\textbf{Висновки.} При виконанні даної роботи ми дослідили
+застосування градієнтного методу до мінімізації заданої квадратичної функції, що має
+ярну структуру. Для збільшення швидкості збіжності було реалізовано метод дроблення кроку,
+який на кожній ітерації обирає крок $\alpha_k$ найбільшим серед тих, які забезпечують рух
+у напрямку мінімуму.
 \end{document}
