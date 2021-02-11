@@ -7,7 +7,7 @@ def f(x_vec):
     return x**2 + y**2 + z**2
 
 
-def proj(a_vec):
+def HyperplaneProj(a_vec, p, beta):
     """
     Function for projecting argument point on X: x + y + z = 1.
     Parameteres:
@@ -16,8 +16,6 @@ def proj(a_vec):
 
     Returns: projX(a)
     """
-    p = np.array([1, 1, 1])
-    beta = 1
     return a_vec + (beta - np.dot(p, a_vec))/(np.linalg.norm(p)**2) * p
 
 
@@ -32,5 +30,7 @@ opt = GDProjOptimizer(**opt_params)
 
 # initial point
 x0 = np.array([3, -6, 4])
-hist = opt.minimize(f, proj, x0)
+hist = opt.minimize(f,
+                    lambda x: HyperplaneProj(x, np.array([1, 1, 1]), 1),
+                    x0)
 print(hist)
