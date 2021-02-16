@@ -1,33 +1,32 @@
 import numpy as np
 
 class GDOptimizer:
-    def __init__(self, beta = 0.1, lmb = 0.5, tol = 1e-5, max_iter = 100):
+    def __init__(self, tol = 1e-5, max_iter = 100):
         """
         Parameteres
         -----------
-        beta, lmb : float
-                    parameteres of step decay,
-                    beta - initial step (default 0.1), 
-                    lmb - decay rate (default 0.5)
         max_iter  : int
                     maximum number of iterations, 
                     default is 100
         tol       : tolerance for algorithm stopping 
                     |f(x_prev) - f(x_new)| < tol
         """
-        self.beta = beta
-        self.lmb = lmb
         self.tol = tol
         self.max_iter = int(max_iter)
     
-    def minimize(self, target_func, x0, h = 0.005):
+    def minimize(self, target_func, x0, beta = 0.1, lmb = 0.5, h = 0.005):
         """
+        Minimize arbitrary function with given initial point
         Parameteres
         -----------
         target_func : callable
                       function to minimize
         x0          : np.array of shape (n, )
                       initial point
+        beta, lmb   : float
+                      parameteres of step decay,
+                      beta - initial step (default 0.1), 
+                      lmb - decay rate (default 0.5)
         h           : step for computing gradients,
                       default is 0.005
         -----------
@@ -52,9 +51,39 @@ class GDOptimizer:
         history.append([*x0, target_func(x0)])      
         for k in range(self.max_iter):
             grad = compute_grad(target_func, x, h)
-            alpha = self.beta
+            alpha = beta
             while target_func(x - alpha*grad) >= target_func(x):
-                alpha = alpha*self.lmb
+                alpha = alpha*lmb
+            x = x - alpha*grad
+            history.append([*x, target_func(x)])
+            if k > 0 and np.abs(history[-1][1] - history[-2][1]) < self.tol:
+                break
+        return np.array(history)
+
+    def minimizeQuad(self, A, b, x0):
+        """
+        Minimize quadratic function (Ax, x) + (b, x)
+        with given initial point
+        Parameteres
+        -----------
+        A, b    : np.array
+                  parameteres of target function
+        x0      : np.array of shape (n, )
+                  initial point
+        -----------
+        Returns history - np.array with shape (n_iter, n+1), n - number of variables;
+                history[:, -1] - values of target functions
+                history[-1, :-1] - solution
+                history[-1, -1] - value of target function at solution point
+        """
+        target_func = lambda x: np.dot(A @ x, x) + np.dot(b, x)
+        compute_grad = lambda x: 2*(A @ x) + b
+        history = []
+        x = np.copy(x0)
+        history.append([*x0, target_func(x0)])
+        for k in range(self.max_iter):
+            grad = compute_grad(x)
+            alpha = np.dot(2*A @ x + b, grad)/(2*np.dot(A @ grad, grad))
             x = x - alpha*grad
             history.append([*x, target_func(x)])
             if k > 0 and np.abs(history[-1][1] - history[-2][1]) < self.tol:
