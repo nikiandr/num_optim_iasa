@@ -3,7 +3,7 @@ import numpy as np
 class GDOptimizer:
     def __init__(self, tol = 1e-5, max_iter = 100):
         """
-        Parameteres
+        Parameters
         -----------
         max_iter  : int
                     maximum number of iterations, 
@@ -14,19 +14,21 @@ class GDOptimizer:
         self.tol = tol
         self.max_iter = int(max_iter)
     
-    def minimize(self, target_func, x0, beta = 0.1, lmb = 0.5, h = 0.005):
+    def minimize(self, target_func, x0, beta = 0.1, lmb = 0.5, grad_check = False, h = 0.005):
         """
         Minimize arbitrary function with given initial point
-        Parameteres
+        Parameters
         -----------
         target_func : callable
                       function to minimize
         x0          : np.array of shape (n, )
                       initial point
         beta, lmb   : float
-                      parameteres of step decay,
+                      parameters of step decay,
                       beta - initial step (default 0.1), 
                       lmb - decay rate (default 0.5)
+        grad_check  : bool
+                      whether to check ||grad||^2 < tol or not
         h           : step for computing gradients,
                       default is 0.005
         -----------
@@ -37,7 +39,7 @@ class GDOptimizer:
         """
         def compute_grad(target_func, x, h):
             n = len(x)
-            grad = np.zeros_like(x)
+            grad = np.zeros_like(x).astype(float)
             for i in range(n):
                 x_plus = np.copy(x)
                 x_plus[i] += h
@@ -47,10 +49,12 @@ class GDOptimizer:
             return grad
 
         history = []
-        x = np.copy(x0)
-        history.append([*x0, target_func(x0)])      
+        x = np.copy(x0).astype(float)
+        history.append([*x, target_func(x)])      
         for k in range(self.max_iter):
             grad = compute_grad(target_func, x, h)
+            if grad_check and np.linalg.norm(grad)**2 < self.tol:
+                break
             alpha = beta
             while target_func(x - alpha*grad) >= target_func(x):
                 alpha = alpha*lmb
@@ -64,10 +68,10 @@ class GDOptimizer:
         """
         Minimize quadratic function (Ax, x) + (b, x)
         with given initial point
-        Parameteres
+        Parameters
         -----------
         A, b    : np.array
-                  parameteres of target function
+                  parameters of target function
         x0      : np.array of shape (n, )
                   initial point
         -----------
@@ -79,8 +83,8 @@ class GDOptimizer:
         target_func = lambda x: np.dot(A @ x, x) + np.dot(b, x)
         compute_grad = lambda x: 2*(A @ x) + b
         history = []
-        x = np.copy(x0)
-        history.append([*x0, target_func(x0)])
+        x = np.copy(x0).astype(float)
+        history.append([*x, target_func(x)])
         for k in range(self.max_iter):
             grad = compute_grad(x)
             alpha = np.dot(2*A @ x + b, grad)/(2*np.dot(A @ grad, grad))

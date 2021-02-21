@@ -24,7 +24,7 @@ def PlotContour(x_lim, y_lim, target_func, points = None, fname = None):
         plt.plot(points[:, 0], points[:, 1], color = 'tab:red', linewidth = 1)
         plt.scatter(points[-1, 0], points[-1, 1], color = 'tab:red', marker = 'x', s = 20)
         plt.scatter(points[0, 0], points[0, 1], color = 'tab:red', marker = 'o', s = 20)
-        plt.title(f'x* = argmin F(x) = ({points[-1, 0]:.5f}, {points[-1, 1]:.5f})\nF(x*) = {points[-1, 2]}\nfound in {points.shape[0]-1} iterations')
+        plt.title(f'x* = argmin F(x) = ({points[-1, 0]:.5f}, {points[-1, 1]:.5f})\nF(x*) = {points[-1, 2]}\nfound in {points.shape[0]-1} iterations, initial point ({points[0, 0]}, {points[0, 1]})')
     if fname is None:
         plt.show()
     else:
