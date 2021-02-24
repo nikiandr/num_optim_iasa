@@ -3,12 +3,15 @@ import numpy as np
 
 
 class NewtonOptimizer:
-    def __init__(self, beta=1, tol=1e-5, max_iter=100):
+    def __init__(self, beta=1, lmb=None, tol=1e-5, max_iter=100):
         """
         Parameteres
         -----------
         beta      : float
-                    step parameter (default 1)
+                    initial step (default 1)
+        lmb       : float or None
+                    step decay parameter
+                    if None - classic Newton method is used instead
         max_iter  : int
                     maximum number of iterations,
                     default is 100
@@ -18,6 +21,7 @@ class NewtonOptimizer:
         self.beta = beta
         self.tol = tol
         self.max_iter = int(max_iter)
+        self.lmb = lmb
 
     def minimize(self, target_func, x0, h=0.005):
         """
@@ -72,9 +76,15 @@ class NewtonOptimizer:
         for k in range(self.max_iter):
             grad = compute_grad(target_func, x, h)
             hessian = compute_hessian(target_func, x, h)
+            step = np.linalg.pinv(hessian) @ grad
+
+            
             alpha = self.beta
-            x = x - alpha * np.linalg.pinv(hessian) @ grad
-            # x = x + (-1)*a*[f"]^(-1)*f'
+            if self.lmb is not None:
+                while target_func(x - alpha*step) > target_func(x):  # > !!!
+                    alpha = alpha * self.lmb
+                    
+            x = x - alpha * step
             history.append([*x, target_func(x)])
             if k > 0 and np.abs(history[-1][1] - history[-2][1]) < self.tol:
                 break
