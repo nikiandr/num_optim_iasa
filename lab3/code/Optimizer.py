@@ -52,13 +52,19 @@ class GDProjOptimizer:
             return grad
 
         history = []
-        x = np.copy(x0)
+        x = np.copy(x0).astype(float)
         history.append([*x0, target_func(x0)])
         for k in range(self.max_iter):
             grad = compute_grad(target_func, x, h)
             alpha = self.beta
-            while target_func(x - alpha*grad) >= target_func(x):
-                alpha = alpha*self.lmb
+            """print('-----', k)
+            print('x =', x)
+            print('grad =', grad)
+            print('alpha =', alpha)
+            print('x - alpha*grad =', x-alpha*grad)
+            print('proj =', proj_func(x - alpha*grad))"""
+            #while target_func(proj_func(x - alpha*grad)) >= target_func(x) and alpha > 1e-7:
+            #    alpha = alpha*self.lmb
             x = proj_func(x - alpha*grad)
             history.append([*x, target_func(x)])
             if k > 0 and np.abs(history[-1][1] - history[-2][1]) < self.tol:

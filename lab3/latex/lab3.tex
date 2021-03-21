@@ -91,19 +91,21 @@
 \end{titlepage}
 
 \begin{center}
-    \textbf{Варіант 1}
+    \textbf{Варіанти 1 та 9}
 \end{center}
-\textbf{Завдання.} Скласти програму для умовної мінімізації цільової функції
+\textbf{Завдання.} Скласти програму для умовної мінімізації цільової функції $f$ на множині $X$
 одним з методів проекції градієнта. Конкретний тип методу обрати
 самостійно, ураховуючи особливості цільової функції.
 
-\emph{Цільова функція:}
-$f(x,y) = x^2 + y^2 + z^2$
+Цільові функції:
 
-\emph{Обмеження:}
-$X = \{ (x,y,z) \in \mathbb{R}^3 \mid x + y + z = 1 \}$
+\emph{Варіант 1.} $f(x, y, z) = x^2 + y^2 + z^2$, $X = \{ (x,y,z) \in \mathbb{R}^3 : x + y + z = 1 \}$.
+
+\emph{Варіант 9.} $f(x, y, z) = x + 4y + z$, $X = \{ (x,y,z) \in \mathbb{R}^3 : x^2 + 3y^2 + 2z^2 \leq 1 \}$.
 
 \noindent\textbf{Результати роботи.}
+
+\emph{Варіант 1.}
 Для дослідження цільової функції розглянемо її матрицю Гессе
 $f''(x,y,z) = \begin{pmatrix}
     2 & 0 & 0 \\
@@ -114,17 +116,107 @@ $f''(x,y,z) = \begin{pmatrix}
 
 Множина $X$ є гіперплощиною в $\mathbb{R}^3$, а отже є замкненою та опуклою.
 Явна формула проекції на гіперплощину
-$H_{p\beta} = \{x \in \mathbb{R}^n \mid (p,x)=\beta\}$:
-$\pi_X\alpha = \alpha + (\beta - (p,a))\cdot \frac{p}{\|p\|^2}$
+$H_{p\beta} = \{x \in \mathbb{R}^n : (p,x)=\beta\}$:
+$\pi_X a = a + (\beta - (p,a))\cdot \frac{p}{\|p\|^2}$.
+В нашому випадку $\beta = 1$, а $p=(1,1,1)^T$.
 
-В нашому випадку $\beta = 1$, а $p=(1,1,1)^T$
+Розв'яжемо задачу аналітично:
+\begin{gather*}
+    \mathcal{L}(x, y, z, \lambda) = x^2 + y^2 + z^2 + \lambda(x+y+z-1) \\
+    \begin{cases}
+        \frac{\partial \mathcal{L}}{\partial x} = 2x + \lambda = 0 \\
+        \frac{\partial \mathcal{L}}{\partial x} = 2y + \lambda = 0 \\
+        \frac{\partial \mathcal{L}}{\partial x} = 2z + \lambda = 0 \\
+        x + y + z = 1
+    \end{cases} \Rightarrow
+    \begin{cases}
+        x^* = 1/3 \\
+        y^* = 1/3 \\
+        z^* = 1/3 \\
+        \lambda = -2/3
+    \end{cases}
+\end{gather*}
 
-Для пришвидшення збіжності, для реалізації було обрано метод дроблення кроку,
-який має допомогти зменшити зигзагоподібний характер шляху до точки мінімуму.
-Обраний критерій зупинки --- $\left| f(x_{k+1}) - f(x_k)\right| < \varepsilon = 10^{-5}$.
-Було отримано збіжність до точки мінімуму за $54$ ітерацій.
+\emph{Варіант 9.} В цьому випадку мінімізується неперервна функція на компакті, тому розв'язок у задачі існує. Знайти явну функцію для обчислення проекції
+на еліпсоїд складно або навіть неможливо.
+Зауважимо, що цільова функція є гармонічною у заданій множині 
+(тобто, $\Delta f = \frac{\partial^2 f}{\partial x^2} + \frac{\partial^2 f}{\partial y^2} + \frac{\partial^2 f}{\partial z^2} = 0$),
+тому досягати екстремуму може лише на границі множини $\partial X = \{ (x,y,z) \in \mathbb{R}^3 : x^2 + 3y^2 + 2z^2 = 1 \}$. 
+Отже, будемо шукати проекції чисельно, застосувавши \emph{метод штрафних функцій}, який полягає у тому, що задача умовної оптимізації
+$$ 
+\begin{cases}
+    f(x) \to \min \\
+    g_1(x) = 0, ..., g_k(x) = 0
+\end{cases}
+$$
+замінюється задачею безумовної оптимізації
+$$
+\widehat{f}(x) = f(x) + \alpha \cdot \left(g_1^2(x) + ... + g_k^2(x)\right) \to \min, \; \alpha \gg 0
+$$
+Суть цього методу у тому, що другий доданок при великих значеннях $\alpha$ наближує індикатор множини, що задається обмеженнями умовної задачі.
 
-\lstinputlisting[style = output_txt]{../output.txt}
+Розв'яжемо задачу аналітично:
+\begin{gather*}
+    \mathcal{L}(x, y, z, \lambda) = x + 4y + z + \lambda(x^2 + 3y^2 + 2z^2 - 1) \\
+    \begin{cases}
+        \frac{\partial \mathcal{L}}{\partial x} = 1 + 2\lambda x = 0 \\
+        \frac{\partial \mathcal{L}}{\partial x} = 4 + 6\lambda y = 0 \\
+        \frac{\partial \mathcal{L}}{\partial x} = 1 + 4\lambda z = 0 \\
+        x^2 + 3y^2 + 2z^2 = 1
+    \end{cases} \Rightarrow
+    \begin{cases}
+        x = -1/{2\lambda} \\
+        y = -2/{3\lambda} \\
+        z = -1/{4\lambda} \\
+        x^2 + 3y^2 + 2z^2 = 1
+    \end{cases} \Rightarrow \\ \Rightarrow
+    \begin{cases}
+        x = -1/{2\lambda} \\
+        y = -2/{3\lambda} \\
+        z = -1/{4\lambda} \\
+        \lambda = \pm \sqrt{41/24}
+    \end{cases} \Rightarrow
+    \begin{cases}
+        x = \mp \sqrt{6/41} \\
+        y = \mp 4\sqrt{2/123} \\
+        z = \mp \sqrt{3/82} \\
+        \lambda = \pm \sqrt{41/24}
+    \end{cases}
+\end{gather*}
+Отже, розв'язок задачі --- $\left(-\sqrt{\frac{6}{41}}, -4\sqrt{\frac{2}{123}}, -\sqrt{\frac{3}{82}}\right) \approx \left(-0.383, -0.51, -0.191\right)$.
+
+Для пришвидшення збіжності методу проекції, для реалізації було обрано метод дроблення кроку.
+Критерій зупинки --- $\left| f(x_{k+1}) - f(x_k)\right| < \varepsilon = 10^{-5}$.
+
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        {} & \multicolumn{2}{c|}{кількість ітерацій}\\
+        \hline
+        $x_0$ & {варіант 1} & {варіант 9}\\
+        \hline
+        $\mathrm{argmin}$ & 2 & 2 \\
+        \hline
+        $(0, 0, 0)$ & 2 & 31 \\
+        \hline
+        $(1, 1, 1)$ & 2 & 38 \\
+        \hline
+        $(10, 10, 10)$ & 2 & 38 \\
+        \hline
+        $(100, 100, 100)$ & 2 & 39 \\
+        \hline
+        $(1000, 1000, 1000)$ & 2 & 40 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+Приклади траєкторій спуску методу:
+\begin{center}
+    \begin{tabular}{c c}
+        \includegraphics[scale = 0.7]{res_var1_(1).png} &
+        \includegraphics[scale = 0.7]{res_var9_(1).png} 
+    \end{tabular}
+\end{center}
 
 \noindent\textbf{Лістинг.}
 Текст програми було розділено на \texttt{Optimizer.py} з реалізацією
@@ -137,8 +229,8 @@ $\pi_X\alpha = \alpha + (\beta - (p,a))\cdot \frac{p}{\|p\|^2}$
 \lstinputlisting[language = Python, style = python_code]{../code/lab3.py}
 
 \noindent\textbf{Висновки.} При виконанні даної роботи ми дослідили
-застосування методу проекції градієнта до мінімізації заданої квадратичної функції 
-з обмеженням на гіперплощині. Для збільшення швидкості збіжності було реалізовано метод дроблення кроку,
+застосування методу проекції градієнта до мінімізації квадратичної функції 
+з обмеженням на гіперплощині та лінійної функції з обмеженням на еліпсоїді. Для збільшення швидкості збіжності було реалізовано метод дроблення кроку,
 який на кожній ітерації обирає крок $\alpha_k$ найбільшим серед тих, які забезпечують рух
-у напрямку мінімуму.
+у напрямку мінімуму. Як ми побачили, метод збігається навіть тоді, коли початкова точка не належить множині $X$.
 \end{document}
