@@ -24,7 +24,7 @@ def EllipsoidUniform(a, b, c, seed=42):
                    1/np.sqrt(b) * np.sin(theta) * np.sin(phi),
                    1/np.sqrt(c) * np.cos(phi)]) # select initial point uniformly on Ellipsoid
     np.random.seed(None)
-    return x0
+    return x0.flatten().tolist()
 
 def EllipsoidProj(point, a, b, c, opt, alpha=100, seed=42):
     """
@@ -46,7 +46,7 @@ def EllipsoidProj(point, a, b, c, opt, alpha=100, seed=42):
             x, y, z = vect[0], vect[1], vect[2]
             return (x-point[0])**2 + (y-point[1])**2 + (z-point[2])**2 + alpha*(a*x**2 + b*y**2 + c*z**2 - 1)**2
         proj = opt.minimize(penalizer, x0)[-1, :-1]
-        return proj.flatten().tolist()
+        return proj
 
 class GDProjOptimizer:
     def __init__(self, beta=0.1, lmb=0.5, tol=1e-5, max_iter=100):
