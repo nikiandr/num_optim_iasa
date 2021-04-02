@@ -1,0 +1,112 @@
+\documentclass{extreport}
+
+\usepackage[14pt]{extsizes}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+
+\usepackage[a4paper, top=10mm, bottom=15mm, left=20mm, right=15mm]{geometry}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{textgreek}
+\usepackage{diagbox}
+\usepackage{pgfplots}
+\pgfplotsset{compat = 1.16}
+
+
+\lstdefinestyle{output_txt}{
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\lstdefinestyle{python_code}{ 
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                            
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4
+}
+
+\setlist[enumerate]{nosep}
+\graphicspath{{pics/}}
+\DeclareGraphicsExtensions{.png}
+
+\begin{document}
+\begin{titlepage}
+    \thispagestyle{empty}
+    \begin{center}
+        \includegraphics[width = \textwidth]{kpi}
+        Міністерство освіти і науки України\\
+        Національний технічний університет України\\
+        <<Київський політехнічний інститут ім. І. Сікорського>>\\
+        Інститут прикладного системного аналізу
+    \end{center}
+    \vspace{40mm}
+    \begin{center}
+        \textbf{Лабораторна робота} \\
+        з курсу <<Методи оптимізації>> \\
+        з теми <<Методи одновимірної оптимізації>
+    \end{center}
+    \vspace{20mm}
+    \begin{flushleft}
+        Виконали студенти 3 курсу групи КА-81 \\
+        Галганов Олексій \\
+        Єрко Андрій \\
+        Фордуй Нікіта
+    \end{flushleft}
+    \begin{flushright}
+        Перевірили \\
+        Спекторський Ігор Якович \\
+        Яковлева Алла Петрівна
+    \end{flushright}
+    \vspace{30mm}
+    \begin{center}
+        \textbf{Київ 2021}
+    \end{center}
+\end{titlepage}
+
+%\begin{center}
+%    \textbf{Варіант 1}
+%\end{center}
+\textbf{Завдання.} Порівняти різні методи одновимірної оптимізації: метод дихотомії, метод Фібоначчі, метод золотого перетину, метод парабол та
+метод кубічної інтерполяції.
+
+\noindent\textbf{Результати роботи.}
+
+\noindent\textbf{Лістинг.}
+%Текст програми було розділено на \texttt{Optimizer.py} з реалізацією
+%власне методу проекції градієнту і методу Ньютона з попередньої лабораторної роботи, який використовується
+%для розв'язання задачі проекції, та \texttt{lab3.py}, де викликаються необхідні функції та зберігаються результати.
+
+%\noindent\texttt{Optimizer.py}
+%\lstinputlisting[language = Python, style = python_code]{../code/Optimizer.py}
+
+%\noindent\texttt{lab4.py}
+%\lstinputlisting[language = Python, style = python_code]{../code/lab3.py}
+
+\noindent\textbf{Висновки.}
+\end{document}
