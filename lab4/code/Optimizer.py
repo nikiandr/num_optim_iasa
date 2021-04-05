@@ -1,4 +1,3 @@
-from typing import NoReturn
 import numpy as np
 
 def chad_fibonacci(i):
@@ -8,28 +7,40 @@ def chad_fibonacci(i):
         a, b = b, a + b
     return a
 
-
 def virgin_fibonacci(i):
     left = ((1 + (5 ** 0.5))/2)**(i+1)
     right = ((1 - (5 ** 0.5))/2)**(i+1)
     return (left - right)/ (5 ** 0.5)
 
-
 def D(f, x, h=0.005):
     return (f(x+h) - f(x-h))/(2*h)
+
+def D2(f, x, h=0.005):
+    return (f(x+h) - 2*f(x) + f(x-h))/(h**2)
 
 def GradDesc(f, x0, beta=1, lmb=0.5, tol=1e-5, max_iter=1000, h=0.005):
     x = x0
     for i in range(max_iter):
-        alpha = beta
         d = D(f, x, h)
-        while f(x - alpha*d) >= f(x):
+        alpha = beta
+        while f(x - alpha*d) >= f(x) and alpha >= 1e-7:
             alpha = alpha*lmb
         x = x - alpha*d
         if np.abs(D(f, x, h)) < tol:
             break
-    return {'x': x, 'iterations': i+1}
+    return {'x': x, 'f(x)': f(x), 'iterations': i+1}
 
+def Newton(f, x0, beta=1, lmb=0.5, tol=1e-5, max_iter=1000, h=0.005):
+    x = x0
+    for i in range(max_iter):
+        d = D(f, x, h)/D2(f, x, h)
+        alpha = beta
+        while f(x - alpha*d) >= f(x) and alpha >= 1e-7:
+            alpha = alpha*lmb
+        x = x - alpha*d
+        if np.abs(D(f, x, h)) < tol:
+            break
+    return {'x': x, 'f(x)': f(x), 'iterations': i+1}
 
 def dichotomy(f, a, b, delta, tol=1e-5, max_iter=1000):
     for i in range(max_iter):
@@ -42,7 +53,8 @@ def dichotomy(f, a, b, delta, tol=1e-5, max_iter=1000):
             a = x1
         if abs(b-a) < 2*tol:
             break
-    return {'x': (a+b)/2, 'iterations': i+1}
+    x = (a+b)/2
+    return {'x': x, 'f(x)': f(x), 'iterations': i+1}
 
 
 def golden_ratio(f, a, b, tol=1e-5, max_iter=1000):
@@ -71,4 +83,5 @@ def fibonacci_method(f, a, b, n):
     delta = 1e-3 # smoll boi
     a = 0.5*(b - a) + a
     b = (0.5 + delta)*(b - a) + a
-    return {'x': (a+b)/2, 'iterations': n}
+    x = (a+b)/2
+    return {'x': x, 'f(x)': f(x), 'iterations': n}
