@@ -57,16 +57,15 @@ def LinearizationOptimizer(f0, constraints, x0, eps, N, tol=1e-5, max_iter=100):
             constr_val.append(constraints[i](x))
         d_constr = np.array(d_constr)
         constr_val = np.array(constr_val)
-        p = QuadraticOptimizer(np.eye(len(df0)), df0, -d_constr, -constr_val)
+        p = QuadraticOptimizer(np.eye(len(df0)), df0, -d_constr, constr_val)
         alpha = 1
         while F_N(x + alpha*p) > F_N(x) - eps*alpha*np.linalg.norm(p)**2:
             alpha = alpha * 0.5
-        print(alpha)
         x = x + alpha*p
         history.append([*x, f0(x)])
         if k > 0 and np.abs(history[-1][1] - history[-2][1]) < tol:
                 break
-    return history
+    return np.array(history)
 
 
 def f0(x_vect):
@@ -78,5 +77,5 @@ def f1(x_vect):
     return -(-x**2 + y)
 
 x0 = np.array([1.2, -1.3]).astype(float)
-hist = LinearizationOptimizer(f0, [f1], x0, eps=0.5, N=10000, max_iter=100)
-print(hist)
+hist = LinearizationOptimizer(f0, [f1], x0, eps=0.5, N=100, max_iter=100)
+print(hist[-1, :-1])
