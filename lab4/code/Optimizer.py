@@ -1,87 +1,26 @@
 import numpy as np
+from scipy.optimize import minimize_scalar
 
-def chad_fibonacci(i):
-    a = 1
-    b = 1
-    for __ in range(i):
-        a, b = b, a + b
-    return a
-
-def virgin_fibonacci(i):
-    left = ((1 + (5 ** 0.5))/2)**(i+1)
-    right = ((1 - (5 ** 0.5))/2)**(i+1)
-    return (left - right)/ (5 ** 0.5)
-
-def D(f, x, h=0.005):
-    return (f(x+h) - f(x-h))/(2*h)
-
-def D2(f, x, h=0.005):
-    return (f(x+h) - 2*f(x) + f(x-h))/(h**2)
-
-def GradDesc(f, x0, beta=1, lmb=0.5, tol=1e-5, max_iter=1000, h=0.005):
-    x = x0
-    for i in range(max_iter):
-        d = D(f, x, h)
-        alpha = beta
-        while f(x - alpha*d) >= f(x) and alpha >= 1e-7:
-            alpha = alpha*lmb
-        x = x - alpha*d
-        if np.abs(D(f, x, h)) < tol:
-            break
-    return {'x': x, 'f(x)': f(x), 'iterations': i+1}
-
-def Newton(f, x0, beta=1, lmb=0.5, tol=1e-5, max_iter=1000, h=0.005):
-    x = x0
-    for i in range(max_iter):
-        d = D(f, x, h)/D2(f, x, h)
-        alpha = beta
-        while f(x - alpha*d) >= f(x) and alpha >= 1e-7:
-            alpha = alpha*lmb
-        x = x - alpha*d
-        if np.abs(D(f, x, h)) < tol:
-            break
-    return {'x': x, 'f(x)': f(x), 'iterations': i+1}
-
-def dichotomy(f, a, b, delta, tol=1e-5, max_iter=1000):
-    for i in range(max_iter):
-        d = (b - a)/2 * delta
-        x1 = (a + b)/2 - d
-        x2 = (a + b)/2 + d
-        if f(x1) < f(x2):
-            b = x2
-        else:
-            a = x1
-        if abs(b-a) < 2*tol:
-            break
-    x = (a+b)/2
-    return {'x': x, 'f(x)': f(x), 'iterations': i+1}
-
-
-def golden_ratio(f, a, b, tol=1e-5, max_iter=1000):
-    d = 4/(5**0.5 + 1) - 1
-    return dichotomy(f, a, b, d, tol, max_iter)
-
-
-def fibonacci_method(f, a, b, n):
-    # Fn >= (b - a)/tol
-    '''
-    n = 0
-    while chad_fibonacci(n) < (b - a) / tol:
-        n += 1
-    '''
-    x1 = a + (chad_fibonacci(n-2)/chad_fibonacci(n))*(b - a)
-    x2 = a + (chad_fibonacci(n-1)/chad_fibonacci(n))*(b - a)
-    for k in range(1, n - 1):
-        if f(x1) > f(x2):
-            a = x1
-            x1 = x2
-            x2 = a + (chad_fibonacci(n-k-1)/chad_fibonacci(n-k))*(b - a)
-        else:
-            b = x2
-            x2 = x1
-            x1 = a + (chad_fibonacci(n-k-2)/chad_fibonacci(n-k))*(b - a)
-    delta = 1e-3 # smoll boi
-    a = 0.5*(b - a) + a
-    b = (0.5 + delta)*(b - a) + a
-    x = (a+b)/2
-    return {'x': x, 'f(x)': f(x), 'iterations': n}
+def QuadraticCG(A, b):
+    """
+    Use conjugate gradients method to minimize
+    1/2 * (Ax, x) + (b, x)
+    A is symmetric non-negative defined n*n matrix,
+    b is n-dimensional vector
+    """
+    def target(x):
+        return 1/2 * np.dot(A @ x, x) + np.dot(b, x)
+    def grad(x):
+        return A @ x + b
+    x = np.random.randn(len(b))
+    history = []
+    history.append([*x, target(x)])
+    r, h = -grad(x), -grad(x)
+    for _ in range(1, len(b)+1):
+        alpha = np.linalg.norm(r)**2/np.dot(A @ h, h)
+        x = x + alpha * h
+        history.append([*x, target(x)])
+        beta = np.linalg.norm(r - alpha*(A @ h))**2/np.linalg.norm(r)**2
+        r = r - alpha*(A @ h)
+        h = r + beta*h
+    return np.array(history)

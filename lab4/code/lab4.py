@@ -1,14 +1,18 @@
 import numpy as np
+from Optimizer import QuadraticCG
+from Plotter import PlotContour
 
-from Optimizer import GradDesc, Newton, dichotomy, golden_ratio, fibonacci_method
+A = 2*np.array([[1, 0.005], [0.005, 18]])
+b = np.array([1, -1])
 
-f = lambda x: x**2 + x
-f = lambda x: (x-1)**6
-f = lambda x: np.sqrt(np.abs(x+3)) - np.cos(x)**4
-f = lambda x: np.exp(x) - 0.33*x**3 + 2*x
+def f(x_vect):
+    x, y = x_vect[0], x_vect[1]
+    x = np.array([x, y])
+    return (1/2 * x.T @ A @ x + b.T @ x)[0, 0]
 
-print('Gradient\t', GradDesc(f, x0=0, beta=0.5))
-print('Newton\t\t', Newton(f, x0=0, beta=0.5))
-print('Dichotomy\t', dichotomy(f, -3, 0, 0.001))
-print('Golden ratio\t', golden_ratio(f, -3, 0))
-print('Fibonacci\t', fibonacci_method(f, -3, 0, 25))
+hist = QuadraticCG(A, b)
+
+# pictures
+x_min, x_max = np.min(hist[:, 0])-0.5, np.max(hist[:, 0])+0.5
+y_min, y_max = np.min(hist[:, 1])-0.5, np.max(hist[:, 1])+0.5
+PlotContour((x_min, x_max), (y_min, y_max), f, hist)
