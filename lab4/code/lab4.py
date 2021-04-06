@@ -1,5 +1,5 @@
 import numpy as np
-from Optimizer import QuadraticCG
+from Optimizer import QuadraticCG, ConjugateGradient
 from Plotter import PlotContour
 
 A = 2*np.array([[1, 0.005], [0.005, 18]])
@@ -10,7 +10,15 @@ def f(x_vect):
     x = np.array([x, y])
     return (1/2 * x.T @ A @ x + b.T @ x)[0, 0]
 
-hist = QuadraticCG(A, b)
+def Rosenbrok(x_vect):
+    x, y = x_vect[0], x_vect[1]
+    return (y-x**2)**2 + (1-x)**2
+
+f = Rosenbrok
+
+# hist = QuadraticCG(A, b)
+x0 = np.array([100, 100.0])
+hist = ConjugateGradient(f, x0, True)
 
 # pictures
 x_min, x_max = np.min(hist[:, 0])-0.5, np.max(hist[:, 0])+0.5
