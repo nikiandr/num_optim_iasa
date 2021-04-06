@@ -79,16 +79,3 @@ def LinearizationOptimizer(f0, constraints, x0, eps, tol=1e-5, max_iter=100):
         if k > 0 and np.linalg.norm(p) < tol:
                 break
     return np.array(history)
-
-
-def f0(x_vect):
-    x, y = x_vect[0], x_vect[1]
-    return (x-2)**2 + (y-1)**2 
-
-def f1(x_vect):
-    x, y = x_vect[0], x_vect[1]
-    return -(-x**2 + y)
-
-x0 = np.random.randn(2)
-hist = LinearizationOptimizer(f0, [f1], x0, eps=0.5, max_iter=1000)
-print(hist[-1, :-1])
