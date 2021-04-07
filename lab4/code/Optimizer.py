@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.optimize import minimize_scalar
 
 def dichotomy(f, a, b, delta, tol=1e-5, max_iter=100):
     for _ in range(max_iter):
