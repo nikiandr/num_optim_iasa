@@ -14,13 +14,13 @@ def Rosenbrok(x_vect):
     x, y = x_vect[0], x_vect[1]
     return (y-x**2)**2 + (1-x)**2
 
-f = Rosenbrok
+hist = QuadraticCG(A, b)
 
-# hist = QuadraticCG(A, b)
-x0 = np.array([100, 100.0])
-hist = ConjugateGradient(f, x0, True)
+f = Rosenbrok
+x0 = 1*np.array([1, 1])
+hist = ConjugateGradient(f, x0, renewal=True, grad_check=True)
 
 # pictures
 x_min, x_max = np.min(hist[:, 0])-0.5, np.max(hist[:, 0])+0.5
 y_min, y_max = np.min(hist[:, 1])-0.5, np.max(hist[:, 1])+0.5
-PlotContour((x_min, x_max), (y_min, y_max), f, hist)
+PlotContour((x_min, x_max), (y_min, y_max), f, hist, fname='./lab4/latex/pics/rosenbrok_1.png')

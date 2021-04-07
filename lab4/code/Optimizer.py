@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import minimize_scalar
 
 def dichotomy(f, a, b, delta, tol=1e-5, max_iter=100):
-    for i in range(max_iter):
+    for _ in range(max_iter):
         d = (b - a)/2 * delta
         x1 = (a + b)/2 - d
         x2 = (a + b)/2 + d
@@ -41,7 +41,7 @@ def QuadraticCG(A, b):
     return np.array(history)
 
 
-def ConjugateGradient(target_func, x0, renewal=True, d=0.005, tol=1e-5, max_iter=100):
+def ConjugateGradient(target_func, x0, renewal=True, grad_check=False, d=0.005, tol=1e-5, max_iter=100):
     """
     Minimize arbitrary function using conjugate gradients method
     Parameters
@@ -53,6 +53,8 @@ def ConjugateGradient(target_func, x0, renewal=True, d=0.005, tol=1e-5, max_iter
     renewal     : bool
                   whether to make parameters renewal or not
                   default is True 
+    grad_check  : bool
+                  whether to check ||grad||^2 < tol or not
     d           : step for computing gradients,
                   default is 0.005
     max_iter    : int
@@ -82,6 +84,8 @@ def ConjugateGradient(target_func, x0, renewal=True, d=0.005, tol=1e-5, max_iter
     history.append([*x, target_func(x)])
     
     grad = compute_grad(target_func, x, d)
+    if grad_check and np.linalg.norm(grad)**2 < tol:
+        return np.array(history)
     h = -grad
     for k in range(max_iter):
         old_grad = grad

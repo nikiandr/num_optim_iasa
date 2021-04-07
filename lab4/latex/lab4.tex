@@ -69,7 +69,7 @@
     \begin{center}
         \textbf{Лабораторна робота} \\
         з курсу <<Методи оптимізації>> \\
-        з теми <<Методи одновимірної оптимізації>
+        з теми <<Методи спряжених градієнтів>
     \end{center}
     \vspace{20mm}
     \begin{flushleft}
@@ -89,137 +89,53 @@
     \end{center}
 \end{titlepage}
 
-%\begin{center}
-%    \textbf{Варіант 1}
-%\end{center}
-\noindent\textbf{Завдання.} Порівняти різні методи одновимірної оптимізації.
+\begin{center}
+    \textbf{Варіант 1}
+\end{center}
+\noindent\textbf{Завдання.} Скласти програму для мінімізації цільової функції методом спряжених градієнтів.
+
+\emph{Цільова функція:}
+$f(x,y) = x^2 + 18y^2 + 0.01xy + x - y$
 
 \noindent\textbf{Результати роботи.}
-Ми вирішили порівняти методи дихотомії, золотого перетину та Фібоначчі, а також методи, що можуть застосовуватися до функцій довільної
-кількості змінних --- градієнтний метод та метод Ньютона з дробленням кроку.
-Для методу Фібоначчі в таблицях як кількість ітерацій пишемо мінімальну кількість ітерацій, яка дала розв'язок, наближено рівний іншим.
+Цільова функція є квадратичною: $$f(x, y) = \frac{1}{2} \left<\begin{pmatrix}
+    2 & 0.01 \\ 0.01 & 36
+\end{pmatrix} \begin{pmatrix}
+    x \\ y
+\end{pmatrix}, \begin{pmatrix}
+    x \\y
+\end{pmatrix} \right> + 
+\left<\begin{pmatrix}
+    1 \\ -1
+\end{pmatrix}, \begin{pmatrix}
+    x \\y
+\end{pmatrix} \right>$$
+Мінімум --- у точці $\begin{pmatrix}
+    -0.50014 \\
+    0.0279167
+\end{pmatrix}$.
+Метод спряжених напрямків має мінімізувати її за не більше ніж 2 кроки. Дійсно, при запуску методу з випадкових початкових точок
+отримали точку мінімуму за два кроки.
 \begin{center}
-    $f(x) = x^2 + x$
-
-    \begin{tikzpicture}
-        \begin{axis}[axis lines = center]
-        \addplot [
-            domain=-2:2, 
-            samples=100, 
-            color=black,
-        ] {x^2 + x};
-        \end{axis}
-    \end{tikzpicture}
-
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-                    \bf метод & $x_0$ або $[a_0; b_0]$ &  \bf кінцева точка &  \bf к-сть ітерацій \\
-                    \hline
-              градієнтний &                    $2$ &    $-0.500000$ &                   1 \\
-              \hline
-                  Ньютона &                    $2$ &    $-0.499995$ &                  19 \\
-                  \hline
-                дихотомії &              $[-2; 2]$ &    $-0.500003$ &                  18 \\
-                \hline
-        золотого перетину &              $[-2; 2]$ &    $-0.499998$ &                  26 \\
-        \hline
-                Фібоначчі &              $[-2, 2]$ &    $-0.500004$ &                  15 \\
-                \hline
+    \begin{tabular}{c c}
+        \includegraphics[scale = 0.5]{quadratic_random_1.png} &
+        \includegraphics[scale = 0.5]{quadratic_random_2.png} \\
+        \includegraphics[scale = 0.5]{quadratic_random_3.png} &
+        \includegraphics[scale = 0.5]{quadratic_random_4.png} \\
+        \includegraphics[scale = 0.5]{quadratic_random_5.png} &
+        \includegraphics[scale = 0.5]{quadratic_random_6.png} \\
     \end{tabular}
 \end{center}
 
+Ми також вирішили перевірити цей метод на функції Розенброка
+$f(x, y) = (y-x^2)^2 + (1-x)^2$, яка вже не є квадратичною. Вона має мінімум у точці $(1, 1)$.
+Перевірку зробили з чотирьох початкових точок.
 \begin{center}
-    $f(x) = (x-1)^6$
-
-    \begin{tikzpicture}
-        \begin{axis}[axis lines = center]
-        \addplot [
-            domain=0:2, 
-            samples=100, 
-            color=black,
-        ] {(x-1)^6};
-        \end{axis}
-    \end{tikzpicture}
-    
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-                    \bf метод & $x_0$ або $[a_0; b_0]$ &  \bf кінцева точка &  \bf к-сть ітерацій \\
-                    \hline
-              градієнтний &                    $0$ &    $1.095285$ &                   1000 \\
-              \hline
-                  Ньютона &                    $0$ &    $0.935815$ &                  26 \\
-                  \hline
-                дихотомії &              $[0; 2]$ &    $0.999993$ &                  17 \\
-                \hline
-        золотого перетину &              $[0; 2]$ &    $0.999999$ &                  24 \\
-        \hline
-                Фібоначчі &              $[0, 2]$ &    $1.001520$ &                  15 \\
-                \hline
-    \end{tabular}
-\end{center}
-
-\begin{center}
-    $f(x) = \sqrt{|x+3|} - \cos^4 x$
-    \nopagebreak
-
-    \begin{tikzpicture}
-        \begin{axis}[axis lines = center]
-        \addplot [
-            domain=-4:-2, 
-            samples=200, 
-            color=black,
-        ] {sqrt(abs(x+3)) - (cos(deg(x)))^4};
-        \end{axis}
-    \end{tikzpicture}
-
-    \vspace{0.5em}
-
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-                    \bf метод & $x_0$ або $[a_0; b_0]$ &  \bf кінцева точка &  \bf к-сть ітерацій \\
-                    \hline
-              градієнтний &                    $-4$ &    $-3.000058$ &                   1000 \\
-              \hline
-                  Ньютона &                    $-4$ &    $-4.000032$ &                  1000 \\
-                  \hline
-                дихотомії &              $[-4; -2]$ &    $-2.999993$ &                  17 \\
-                \hline
-        золотого перетину &              $[-4; -2]$ &    $-3.0$ &                  24 \\
-        \hline
-                Фібоначчі &              $[-4; -2]$ &    $-3.000505$ &                  15 \\
-                \hline
-    \end{tabular}
-\end{center}
-
-\begin{center}
-    $f(x) = e^x - 0.33x^3 + 2x$
-
-    \begin{tikzpicture}
-        \begin{axis}[axis lines = center]
-        \addplot [
-            domain=-3:0, 
-            samples=100, 
-            color=black,
-        ] {exp(x) - 0.33*x^3 + 2*x};
-        \end{axis}
-    \end{tikzpicture}
-    
-    \vspace{0.5em}
-
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-                    \bf метод & $x_0$ або $[a_0; b_0]$ &  \bf кінцева точка &  \bf к-сть ітерацій \\
-                    \hline
-              градієнтний &                    $0$ &    $-1.498630$ &                   12 \\
-              \hline
-                  Ньютона &                    $0$ &    $-1.498631$ &                  10 \\
-                  \hline
-                дихотомії &              $[-3; 0]$ &    $-1.498627$ &                  18 \\
-                \hline
-        золотого перетину &              $[-3; 0]$ &    $-1.498628$ &                  25 \\
-        \hline
-                Фібоначчі &              $[-3; 0]$ &    $-1.498622$ &                  25 \\
-                \hline
+    \begin{tabular}{c c}
+        \includegraphics[scale = 0.5]{rosenbrok_0.png} &
+        \includegraphics[scale = 0.5]{rosenbrok_1.png} \\
+        \includegraphics[scale = 0.5]{rosenbrok_10.png} &
+        \includegraphics[scale = 0.5]{rosenbrok_100.png} \\
     \end{tabular}
 \end{center}
 
