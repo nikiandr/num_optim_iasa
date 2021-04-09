@@ -100,97 +100,179 @@
 \end{gather}
 Усі функції $f_0, f_1, ..., f_m \in C^1 (\mathbb{R}^n)$ --- неперервно диференційовні на $\mathbb{R}^n$.
 
-\noindent\textbf{Результати роботи.}
-Опишемо суть методу. Покладемо $\Phi_N (x) = f(x) + N\cdot F(x)$ для великого $N>0$. $F(x) = \max\left\{0, f_1(x), ..., f_m(x)\right\} \geq 0$
+\noindent\textbf{Опис методу.}
+Покладемо $\Phi_N (x) = f(x) + N\cdot F(x)$ для великого $N>0$. $F(x) = \max\left\{0, f_1(x), ..., f_m(x)\right\} \geq 0$
 для всіх $x \in \mathbb{R}^n$, причому рівність досягається тоді і тільки тоді, коли $f_i(x) \leq 0, \; i = 1,...,m$.
 $N$ є одним з параметрів методу. Нехай $x_0 \in \mathbb{R}^n$ --- довільна початкова точка. На $k$-тому кроці роботи методу спочатку розв'язується
 задача квадратичного програмування відносно $p$:
 \begin{gather}\label{2}
     \begin{cases}
-        \frac{1}{2} \Vert p \Vert^2 + \left(f'_0(x_k), p\right) \to \underset{x}{\min} \\
-        f_i(x_k) + \left(f'_i(x_k), p\right) \leq 0, \; i = 1, ..., m
+        \frac{1}{2} \Vert p \Vert^2 + \left<f'_0(x^k), p\right> \to \underset{x}{\min} \\
+        f_i(x^k) + \left<f'_i(x^k), p\right> \leq 0, \; i = 1, ..., m
     \end{cases}
 \end{gather}
 Позначимо
 \begin{gather*}
     D = \begin{pmatrix}
-        -f'_1 (x_k) \\
-        -f'_2 (x_k) \\
+        -f'_1 (x^k) \\
+        -f'_2 (x^k) \\
         \dots \\
-        -f'_m(x_k)
+        -f'_m(x^k)
     \end{pmatrix} = 
     \begin{pmatrix}
-        -(\mathrm{grad}f_1 (x_k))^T \\
-        -(\mathrm{grad}f_2 (x_k))^T \\
+        -(\mathrm{grad}f_1 (x^k))^T \\
+        -(\mathrm{grad}f_2 (x^k))^T \\
         \dots \\
-        -(\mathrm{grad}f_m (x_k))^T
+        -(\mathrm{grad}f_m (x^k))^T
     \end{pmatrix},
     f = \begin{pmatrix}
-        f_1(x_k) \\
-        f_2(x_k) \\
+        f_1(x^k) \\
+        f_2(x^k) \\
         \dots \\
-        f_m(x_k)
+        f_m(x^k)
     \end{pmatrix},
-    c = f'_0(x_k)
+    c = f'_0(x^k)
 \end{gather*}
 Тоді задача (\ref{2}) запишеться як
 \begin{gather}\label{3}
     \begin{cases}
-        \frac{1}{2} \Vert p \Vert^2 + \left(c, p\right) \to \underset{p}{\min} \\
+        \frac{1}{2} \Vert p \Vert^2 + \left<c, p\right> \to \underset{p}{\min} \\
         D p \geq f
     \end{cases}
 \end{gather}
-Ця задача є лінійним наближенням вихідної задачі в околі точки $x_k$.
-Якщо $p_k$ --- розв'язок цієї задачі, то $x_{k+1} = x_k + \alpha_k p_k$, де $\alpha_k$ --- перше число в послідовності $1, \frac{1}{2}, \frac{1}{4}, ...$,
+Ця задача є лінійним наближенням вихідної задачі в околі точки $x^k$.
+Якщо $p^k$ --- розв'язок цієї задачі, то $x_{k+1} = x^k + \alpha^k p^k$, де $\alpha^k$ --- перше число в послідовності $1, \frac{1}{2}, \frac{1}{4}, ...$,
 при якому виконується нерівність
 \begin{gather}
-    \Phi_N (x_k + \alpha_k p_k) \leq \Phi_N(x_k) - \varepsilon \alpha_k \Vert p_k \Vert^2
+    \Phi_N (x^k + \alpha^k p^k) \leq \Phi_N(x^k) - \varepsilon \alpha^k \Vert p^k \Vert^2
 \end{gather}
 
 Б. М. Пшеничний в книзі <<Метод лінеаризації>> \cite{1} доводить, що точка $x\in\mathbb{R}^n$ є стаціонарною для вихідної задачі тоді і тільки тоді, коли
 задача квадратичного програмування
 \begin{gather}
     \begin{cases}
-        \frac{1}{2} \Vert p \Vert^2 + \left(f'_0(x), p\right) \to \underset{p}{\min} \\
-        f_i(x) + \left(f'_i(x), p\right) \leq 0, \; i = 1, ..., m
+        \frac{1}{2} \Vert p \Vert^2 + \left<f'_0(x), p\right> \to \underset{p}{\min} \\
+        f_i(x) + \left<f'_i(x), p\right> \leq 0, \; i = 1, ..., m
     \end{cases}
 \end{gather}
-має розв'язок $p(x)$ і він рівний нулю. Там само доводиться, що за деяких умов (наприклад, ліпшицевість градієнтів функцій, що задають обмеження), метод є збіжним.
+має розв'язок $p(x)$ і він рівний нулю. Там само доводиться, що за деяких умов (наприклад, ліпшицевість градієнтів функцій, що задають обмеження), метод є збіжним
+до стаціонарних точок.
 
 Квадратичну задачу (\ref{3}), що виникає на кожному кроці роботи методу, можна замінити так званою дуальною (двоїстою) задачею:
 \begin{gather}
     \begin{cases}
-        -\frac{1}{2} \Vert u \Vert^2 + \left(f, v\right) \to \underset{u, v}{\max} \\
+        -\frac{1}{2} \Vert u \Vert^2 + \left<f, v\right> \to \underset{u, v}{\max} \\
         D^T v - u = c\\
         v \geq 0
     \end{cases} \Leftrightarrow
     \begin{cases}
-        \frac{1}{2} \Vert u\Vert^2 - \left(f, v\right) \to \underset{u, v}{\min} \\
+        \frac{1}{2} \Vert u\Vert^2 - \left<f, v\right> \to \underset{u, v}{\min} \\
         D^T v - u = c \\
         v \geq 0
     \end{cases}
 \end{gather}
 Виключивши з задачі $u = D^T v - c$, отримаємо
-\begin{gather}
+\begin{gather}\label{non_neg}
     \begin{cases}
-        \frac{1}{2}\left(D D^T v, v\right) - \left(D c + f, v \right) \to \underset{v}{\min} \\
+        \frac{1}{2}\left<D D^T v, v\right> - \left<D c + f, v \right> \to \underset{v}{\min} \\
         v \geq 0
     \end{cases}
 \end{gather}
 Якщо $v^*$ --- її розв'язок, то $p = u^* = D^T v^* - c$ буде розв'язком вихідної квадратичної задачі, як показано в \cite{1} та \cite{2}.
 
+Задачу (\ref{non_neg}) можна розв'язати \emph{методом мультиплікативних оновлень}, викладеним у \cite{3}:
+для задачі
+\begin{gather*}
+    \begin{cases}
+        \frac{1}{2}\left<A v, v\right> + \left<b, v \right> \to \underset{v}{\min} \\
+        v \geq 0
+    \end{cases}
+\end{gather*}
+з $A > 0$ покладають $A^{+} = \max\left\{0, A\right\}$, $A^{-} = -\min\left\{0, A\right\}$ (поелементно).
+Нехай $v^{0}$ --- деяке початкове наближення, на кожній ітерації його координати оновлюють за формулою
+\begin{gather*}
+    v^{k+1}_i = v^{k}_i \cdot \left(\frac{
+        - b_i + \sqrt{b_i^2 + 4 \left(A^+ v^{k}\right)_i \left(A^- v^{k}\right)_i}
+    }{
+        2 \left(A^+ v^{k}\right)_i
+    }\right), \; i = 1, ..., n
+\end{gather*}
+Ці оновлення можна записати як $v^{k+1} = \varphi\left(v^{k}\right)$. В \cite{3} доводиться, що таке
+відображення $\phi$ має нерухому точку, яка є розв'язком задачі мінімізації, тому
+послідовність $v^{k}$ збігається до розв'язку задачі.
+
+Нарешті, у \cite{1} показано, що замість вибору параметру $N$ у методі лінеаризації
+можна задавати деяке велике початкове значення $N_0$, а потім на кожній ітерації оновлювати його
+за допомогою вектора $v^k$, отриманого при розв'язанні дуальної задачі (\ref{non_neg}), за правилом
+\begin{gather*}
+    \begin{cases}
+        N_{k+1} = 2\sum\limits_{i=1}^m v^k_i, & \text{ якщо } \sum\limits_{i=1}^m v^k_i > N_k \\
+        N_{k+1} = N_k, & \text{ інакше}
+    \end{cases}
+\end{gather*}
+
+Також зауважимо, що метод можна застосувати до обмежень-рівностей виду $f(x) = 0$,
+оскільки вони еквівалентні виконанню двох обмежень-нерівностей $f(x) \leq 0$ та $f(x) \geq 0$.
+
+\newpage
+\noindent\textbf{Результати роботи.} Ми перевірили роботу методу на декількох задачах зі ста випадкових початкових точок:
+\begin{center}
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{задача} & \textbf{середня к-сть ітерацій} \\
+        \hline
+        $\begin{cases}
+            x^2 + y^2 + z^2 \to \min \\
+            x + y + z = 1
+        \end{cases}$ & $4.17$ \\
+        \hline
+        $\begin{cases}
+            x + 4y + z \to \min \\
+            x^2 + 3y^2 + 2z^2 \leq 1
+        \end{cases}$ & $241.5$ \\
+        \hline
+        $\begin{cases}
+            (x-2)^2 + (y-1)^2 \to \min \\
+            y - x^2 \leq 0
+        \end{cases}$ & $20.23$ \\
+        \hline 
+        $\begin{cases}
+            -xy \to \min \\
+            x^2 + y^2 \leq 1 \\
+            x \geq 0, y \geq 0
+        \end{cases}$ & $20.9$ \\
+        \hline
+        $\begin{cases}
+            x^2 + y \to \min \\
+            x + y - 1 \leq 0 \\
+            x^2 + y^2 \leq 9
+        \end{cases}$ & $27.7$ \\
+        \hline  
+    \end{tabular}
+\end{center}
+
+В цілому, метод лінеаризації досить швидко збігається до розв'язку задачі,
+але іноді збіжність була довгою через вибір початкової точки.
+
 \noindent\textbf{Лістинг.}
-%Текст програми було розділено на \texttt{Optimizer.py} з реалізацією
-%власне методу проекції градієнту і методу Ньютона з попередньої лабораторної роботи, який використовується
-%для розв'язання задачі проекції, та \texttt{lab3.py}, де викликаються необхідні функції та зберігаються результати.
+Текст програми було розділено на \texttt{Optimizer.py} з реалізацією
+методу лінеаризації та \texttt{lab5.py}, де викликаються необхідні функції та зберігаються результати.
 
-%\noindent\texttt{Optimizer.py}
-%\lstinputlisting[language = Python, style = python_code]{../code/Optimizer.py}
+\noindent\texttt{Optimizer.py}
+\lstinputlisting[language = Python, style = python_code]{../code/Optimizer.py}
 
-%\noindent\texttt{lab4.py}
-%\lstinputlisting[language = Python, style = python_code]{../code/lab3.py}
+\noindent\texttt{lab4.py}
+\lstinputlisting[language = Python, style = python_code]{../code/lab5.py}
 
-\noindent\textbf{Висновки.}
+\noindent\textbf{Висновки.} Реалізований нами метод лінеаризації виявився досить
+швидким та універсальним методом розв'язання задач умовної мінімізації нелінійної
+функції на множині, заданій нелінійними обмеженнями-нерівностями та рівностями.
+Він є складним у реалізації та з обчислювальної точки зору, оскільки
+на кожному кроці необхідно розв'язувати задачу квадратичного програмування з лінійними обмеженнями,
+але ця складність виправдовується універсальністю застосування методу: цільова функція та функції-обмеження
+мають бути лише неперервно-диференційовними. Але через те, що опуклість функцій-обмежень та строга опуклість
+цільової функції не вимагається, в загальному випадку метод збігається лише до стаціонарних точок,
+тому в таких випадках краще запустити мінімізацію з декількох початкових точок та порівняти отримані значення.
 
 \begin{thebibliography}{3}
     \bibitem{1} Пшеничный Б.Н. \emph{Метод линеаризации}. --- М.: Наука. Главная редакция физико-математической литературы, 1983. --- 136 с.

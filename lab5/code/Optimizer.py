@@ -32,7 +32,7 @@ def NonnegativeQuadraticOptimizer(A, b):
         v = v_temp.copy()
     return v
 
-def GeneralQuadraticOptimizer(p, A, b, N_avg=15):
+def GeneralQuadraticOptimizer(p, A, b):
     """
     Solve 1/2 * ||x||^2 + (p, x) -> min under A * x >= b
     using dual problem:
